@@ -21,7 +21,7 @@ RUN useradd -ms /bin/bash bootcamp
 ENV SCALA_VERSION=2.12.10
 ENV ALMOND_VERSION=0.9.1
 
-ENV COURSIER_CACHE=/coursier_cache
+ENV COURSIER_CACHE=/home/bootcamp/coursier_cache
 
 ADD . /chisel-bootcamp/
 WORKDIR /chisel-bootcamp
@@ -59,6 +59,11 @@ FROM base as final
 # copy the Scala requirements and kernel into the image 
 COPY --from=intermediate-builder /coursier_cache/ /coursier_cache/
 COPY --from=intermediate-builder /usr/local/share/jupyter/kernels/scala/ /usr/local/share/jupyter/kernels/scala/
+
+FROM ucbbar/chisel-bootcamp:latest
+
+RUN cp -r /coursier_cache /home/bootcamp/coursier_cache
+ENV COURSIER_CACHE=/home/bootcamp/coursier_cache
 
 RUN chown -R bootcamp:bootcamp /chisel-bootcamp
 
